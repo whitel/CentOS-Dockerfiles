@@ -24,6 +24,9 @@ RUN sed -i 's/"forcessl" => false,/"forcessl" => true,/' /etc/owncloud/config.ph
 RUN sed -i 's/Require local/Require all granted/' /etc/httpd/conf.d/owncloud.conf
 RUN sed -i "s/'trusted_domains'/#'trusted_domains'/" /etc/owncloud/config.php
 
+#expose the volume for data
+VOLUME /var/www/owncloud/data
+
 # Expose port 443 and set httpd as our entrypoint
 EXPOSE 443
 ENTRYPOINT ["/usr/sbin/httpd"]
