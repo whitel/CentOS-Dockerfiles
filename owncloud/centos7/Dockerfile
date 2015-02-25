@@ -24,11 +24,23 @@ RUN sed -i 's/"forcessl" => false,/"forcessl" => true,/' /etc/owncloud/config.ph
 RUN sed -i 's/Require local/Require all granted/' /etc/httpd/conf.d/owncloud.conf
 RUN sed -i "s/'trusted_domains'/#'trusted_domains'/" /etc/owncloud/config.php
 
+ADD         start-owncloud.sh /usr/local/bin/
+RUN         chmod +x /usr/local/bin/start-owncloud.sh
+
 #expose the volume for data
 VOLUME /var/www/owncloud/data
 
 # Expose port 443 and set httpd as our entrypoint
 EXPOSE 443
-ENTRYPOINT ["/usr/sbin/httpd"]
-CMD ["-D", "FOREGROUND"]
+ENTRYPOINT  ["/usr/local/bin/start-owncloud.sh"]
+CMD         [""]
+
+# don't forget to 
+# chcon -Rt svirt_sandbox_file_t /path/to/owncloud-data
+#
+# build with
+# docker build -t <user>/owncloud .
+#
+# run with
+# docker run -d -p 443 -v /local/owncloud/data:/var/www/owncloud/data <user>/owncloud
 
